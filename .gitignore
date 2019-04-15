@@ -64,3 +64,11 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+.project
+data/.classpath
+app/.settings/org.eclipse.buildship.core.prefs
+data/.settings/org.eclipse.buildship.core.prefs
+domain/.classpath
+app/.classpath
+.settings/org.eclipse.buildship.core.prefs
+domain/.settings/org.eclipse.buildship.core.prefs
