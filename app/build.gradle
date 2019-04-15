@@ -1,0 +1,68 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    defaultConfig {
+        applicationId "com.kostikum.cleancode"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        debug{
+            storeFile file('../keystore/key.jks')
+            storePassword '12345678'
+            keyAlias 'key0'
+            keyPassword '12345678'
+        }
+        release{
+            //TODO add keys for release version in Google Play
+
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            buildConfigField "String", "API_ENDPOINT", "\"http://kiparo.ru/t/fake-api/car-service.php\""
+        }
+        release {
+            buildConfigField "String", "API_ENDPOINT", "\"http://kiparo.ru/t/fake-api/car-service.php\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    //Android support lib and UI
+    implementation rootProject.appcompatV7
+    implementation rootProject.supportV4
+
+    implementation rootProject.suportdesign
+
+    implementation rootProject.recyclerViev
+
+    //Rx
+    implementation rootProject.rxjava2Android
+
+    implementation rootProject.lifecycle
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    kapt rootProject.lifecycleCompiler
+
+    //Tests
+    testImplementation rootProject.junit
+    androidTestImplementation rootProject.supportTestRunner
+    androidTestImplementation rootProject.supportTestEspresso
+
+    implementation project(path: ":data")
+}
