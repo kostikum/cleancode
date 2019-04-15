@@ -9,7 +9,7 @@
         android:id="@+id/bottomSheetLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/vehicle_bottom_sheet_height"
-        android:background="#E6E6E6"
+        android:background="#FFFFFF"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <ProgressBar

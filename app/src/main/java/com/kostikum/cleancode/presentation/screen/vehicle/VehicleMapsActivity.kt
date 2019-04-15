@@ -1,8 +1,8 @@
 package com.kostikum.cleancode.presentation.screen.vehicle
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -13,20 +13,20 @@ import com.kostikum.cleancode.R
 import com.kostikum.cleancode.domain.entity.vehicle.Vehicle
 import com.kostikum.cleancode.presentation.base.BaseMvvmActivity
 import com.kostikum.cleancode.presentation.screen.vehicle.list.VehicleListFragment
-import io.reactivex.Observable
+import com.kostikum.cleancode.presentation.screen.vehicle.list.VehicleListViewModel
+import com.kostikum.cleancode.presentation.screen.vehicle.list.VehicleListViewModelFactory
 
 
-class VehicleMapsActivity : BaseMvvmActivity<VehicleMapViewModel>(), OnMapReadyCallback {
+class VehicleMapsActivity : BaseMvvmActivity<VehicleListViewModel>(), OnMapReadyCallback {
 
 
     override fun provideLayoutId(): Int {
         return R.layout.activity_vehicle_maps
     }
 
-    override fun provideViewModel(): VehicleMapViewModel {
-        //простой вариант
-        //return ViewModelProviders.of(this).get(VehicleMapViewModel::class.java)
-        return ViewModelProviders.of(this, VehicleMapViewModelFactory()).get(VehicleMapViewModel::class.java)
+    override fun provideViewModel(): VehicleListViewModel {
+        return ViewModelProviders.of(this, VehicleListViewModelFactory())
+                .get(VehicleListViewModel::class.java)
 
     }
 
@@ -38,6 +38,12 @@ class VehicleMapsActivity : BaseMvvmActivity<VehicleMapViewModel>(), OnMapReadyC
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         if (savedInstanceState == null) initList()
+
+        viewModel.vehicleClicked.observe(this, object : Observer<Vehicle> {
+            override fun onChanged(vehicle: Vehicle?) {
+                if (vehicle != null) moveToVehicle(vehicle)
+            }
+        })
     }
 
     /**
@@ -51,17 +57,12 @@ class VehicleMapsActivity : BaseMvvmActivity<VehicleMapViewModel>(), OnMapReadyC
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap?.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap?.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
-    public fun moveToVehicle(vehicle: Vehicle) {
-        val sydney = LatLng(vehicle.lat, vehicle.lon)
-        mMap?.addMarker(MarkerOptions().position(sydney).title(vehicle.fleetType.toString()))
-        mMap?.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    fun moveToVehicle(vehicle: Vehicle) {
+        val coords = LatLng(vehicle.lat, vehicle.lon)
+        mMap?.addMarker(MarkerOptions().position(coords).title(vehicle.fleetType.toString()))
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(coords, 9.5f))
     }
 
     private fun initList() {
