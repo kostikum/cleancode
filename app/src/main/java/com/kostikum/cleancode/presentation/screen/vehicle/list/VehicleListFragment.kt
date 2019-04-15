@@ -13,6 +13,7 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_vehicle_list.*
 import android.support.v7.widget.DividerItemDecoration
 import android.content.res.Configuration
+import android.support.v7.widget.RecyclerView
 import com.kostikum.cleancode.domain.entity.vehicle.Vehicle
 
 
@@ -66,7 +67,7 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
                 bottomSheetProgressBar.visibility = View.GONE
                 val list = state.vehicleList
 
-                val viewManager = LinearLayoutManager(context)
+                val viewManager = LinearLayoutManager(context) as RecyclerView.LayoutManager
                 val viewAdapter = VehicleListAdapter(list)
 
                 viewAdapter.setListener(object : VehicleListAdapter.OnItemClickListener {
