@@ -19,12 +19,6 @@ abstract class BaseMvvmFragment<VM: BaseViewModel> : Fragment() {
     //Вызывается только после инициализации ВьюМодели
     protected abstract fun initView()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        viewModel = provideViewModel()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(provideLayoutId(), container, false)
     }

@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_test_mvp_mvvm.*
 class TestMvvmActivity : Activity() {
     private lateinit var viewModel: MvvmViewModel
 
-    private val vehicleUseCase = UseCaseProvider.provideGetVehicleUseCase()
+    private val vehicleUseCase = UseCaseProvider.provideGetVehicleUseCase(true)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

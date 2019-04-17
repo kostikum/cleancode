@@ -8,7 +8,7 @@ class VehicleMapViewModelFactory : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return VehicleMapViewModel(UseCaseProvider.provideGetVehicleUseCase()) as T
+        return VehicleMapViewModel(UseCaseProvider.provideGetVehicleUseCase(true)) as T
     }
 
 }

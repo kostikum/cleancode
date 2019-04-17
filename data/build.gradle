@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -33,6 +34,10 @@ dependencies {
     implementation rootProject.retrofitGson
     implementation rootProject.retrofitRxJava
 
+    //Database
+    implementation rootProject.room
+    kapt rootProject.rootAnnotationProcessor
+    implementation rootProject.roomRxJava
 
     testImplementation rootProject.junit
     testImplementation rootProject.okhttp3Mockwebserver

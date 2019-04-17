@@ -1,7 +1,10 @@
 package com.kostikum.cleancode.data.entity.vehicle
 
+import com.google.gson.annotations.SerializedName
+
 internal class VehiclePoiResponse (
 
-    val poiList: List<VehicleResponse>
+    @SerializedName("poiList")
+    val poiList: List<VehicleResponse>? = null
 
 )

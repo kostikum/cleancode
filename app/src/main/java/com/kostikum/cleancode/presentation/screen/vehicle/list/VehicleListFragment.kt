@@ -2,10 +2,11 @@ package com.kostikum.cleancode.presentation.screen.vehicle.list
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.kostikum.cleancode.R
 import com.kostikum.cleancode.domain.entity.vehicle.FleetType
@@ -14,6 +15,10 @@ import com.kostikum.cleancode.presentation.base.BaseMvvmFragment
 import com.kostikum.cleancode.presentation.screen.vehicle.VehicleMapsActivity
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_vehicle_list.*
+import java.util.*
+
+private const val APP_PREFERENCES = "vehicleAppPreferences"
+private const val APP_PREFERENCES_TIME_IN_MILLIS = "timeInMillisAppPreferences"
 
 class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
 
@@ -27,7 +32,15 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
 
     override fun provideLayoutId() = R.layout.fragment_vehicle_list
     override fun provideViewModel(): VehicleListViewModel {
-        return ViewModelProviders.of(activity!!, VehicleLIstViewModelFactory()).get(VehicleListViewModel::class.java)
+
+        val currentTime = Calendar.getInstance().timeInMillis
+        val sp = this.activity!!.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+        val savedTime = sp.getLong(APP_PREFERENCES_TIME_IN_MILLIS, -1)
+        val needServerUpdate = currentTime - savedTime > 60000
+
+        if (needServerUpdate) sp.edit().putLong(APP_PREFERENCES_TIME_IN_MILLIS, currentTime).apply()
+        return ViewModelProviders.of(activity!!, VehicleLIstViewModelFactory(needServerUpdate))
+            .get(VehicleListViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,6 +77,7 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
             is VehicleState.Done -> {
                 bottomSheetProgressBar.visibility = View.GONE
                 val list = state.vehicleList
+                Log.i("AAA", "prishlo " + list.size.toString())
                 Toast.makeText(context, list.size.toString(), Toast.LENGTH_LONG).show()
             }
             is VehicleState.Error -> {

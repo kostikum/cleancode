@@ -59,6 +59,11 @@ ext {
     retrofitGson = "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     retrofitRxJava = "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
 
+    //Room
+    def room_version = "1.1.1"
+    room = "android.arch.persistence.room:runtime:$room_version"
+    rootAnnotationProcessor = "android.arch.persistence.room:compiler:$room_version"
+    roomRxJava = "android.arch.persistence.room:rxjava2:$room_version"
 
     //Tests
     okhttp3Mockwebserver = "com.squareup.okhttp3:mockwebserver:$okhttp3Version"
