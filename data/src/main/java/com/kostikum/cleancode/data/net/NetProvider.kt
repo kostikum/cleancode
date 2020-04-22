@@ -21,7 +21,7 @@ internal fun provideApi() : ApiRest {
     val okhttp = clientBuilder.build();
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("http://kiparo.ru/")
+        .baseUrl("https://kostikum.github.io/")
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(okhttp)
