@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 internal interface ApiRest {
 
-    @GET("t/fake-api/car-service.php")
+    @GET("korean.json")
     fun getVehicle(
         @Query("p1Lat") p1Lat: Double,
         @Query("p1Lon") p1Lon: Double,

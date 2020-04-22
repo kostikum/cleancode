@@ -13,15 +13,15 @@ internal fun provideApi() : ApiRest {
     val clientBuilder = OkHttpClient.Builder();
 
     if (BuildConfig.DEBUG) {
-        val loggingIntercepter = HttpLoggingInterceptor();
-        loggingIntercepter.level = HttpLoggingInterceptor.Level.BODY;
-        clientBuilder.addInterceptor(loggingIntercepter)
+        val loggingInterceptor = HttpLoggingInterceptor();
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY;
+        clientBuilder.addInterceptor(loggingInterceptor)
     }
 
     val okhttp = clientBuilder.build();
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("http://kiparo.ru/")
+        .baseUrl("https://kostikum.github.io/")
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .client(okhttp)
