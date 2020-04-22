@@ -4,16 +4,18 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.kostikum.cleancode.R
-import com.kostikum.cleancode.domain.entity.vehicle.FleetType
-import com.kostikum.cleancode.domain.entity.vehicle.Vehicle
 import com.kostikum.cleancode.presentation.base.BaseMvvmFragment
-import com.kostikum.cleancode.presentation.screen.vehicle.VehicleMapsActivity
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_vehicle_list.*
+import android.support.v7.widget.DividerItemDecoration
+import android.content.res.Configuration
+import android.support.v7.widget.RecyclerView
+import com.kostikum.cleancode.domain.entity.vehicle.Vehicle
+
 
 class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
 
@@ -27,7 +29,7 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
 
     override fun provideLayoutId() = R.layout.fragment_vehicle_list
     override fun provideViewModel(): VehicleListViewModel {
-        return ViewModelProviders.of(activity!!, VehicleLIstViewModelFactory()).get(VehicleListViewModel::class.java)
+        return ViewModelProviders.of(activity!!, VehicleListViewModelFactory()).get(VehicleListViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,7 +38,7 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
         val behavior = BottomSheetBehavior.from(bottomSheetLayout)
         view.post{
             behavior.peekHeight = resources.getDimensionPixelSize(R.dimen.vehicle_bottom_sheet_peek)
-            behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
 
@@ -64,7 +66,26 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
             is VehicleState.Done -> {
                 bottomSheetProgressBar.visibility = View.GONE
                 val list = state.vehicleList
-                Toast.makeText(context, list.size.toString(), Toast.LENGTH_LONG).show()
+
+                val viewManager = LinearLayoutManager(context) as RecyclerView.LayoutManager
+                val viewAdapter = VehicleListAdapter(list)
+
+                viewAdapter.setListener(object : VehicleListAdapter.OnItemClickListener {
+                    override fun onClick(vehicle: Vehicle) {
+                        viewModel.vehicleClick(vehicle)
+                        val behavior = BottomSheetBehavior.from(bottomSheetLayout)
+                        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    }
+                })
+
+                val dividerItemDecoration = DividerItemDecoration(context,
+                        Configuration.ORIENTATION_PORTRAIT)
+                bottomSheetRecyclerView.apply {
+                    setHasFixedSize(true)
+                    adapter = viewAdapter
+                    layoutManager = viewManager
+                    addItemDecoration(dividerItemDecoration)
+                }
             }
             is VehicleState.Error -> {
                 bottomSheetProgressBar.visibility = View.GONE
@@ -72,15 +93,6 @@ class VehicleListFragment : BaseMvvmFragment<VehicleListViewModel>() {
                 Toast.makeText(context, error.toString(), Toast.LENGTH_LONG).show()
             }
         }
-    }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        val activity = activity as VehicleMapsActivity
-
-        activity.moveToVehicle(Vehicle(5, 20.5, 20.5, FleetType.TAXI, 454.56))
     }
 
     override fun onDestroy() {
